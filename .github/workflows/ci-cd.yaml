@@ -77,6 +77,8 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      contents: write
     
     env:
       PROJECT_ID: ${{ secrets.GKE_PROJECT }}
@@ -121,6 +123,7 @@ jobs:
          namespacePresentGreen=`kubectl get ns | grep python-app-green | wc -l`
          if [ $namespacePresentBlue -eq 0 ]
          then
+            echo "Creating blue namespace"
             kubectl create ns python-app-blue
             cd k8s
             kustomize edit set namespace python-app-blue
@@ -128,6 +131,7 @@ jobs:
             echo "OLD_NAMESPACE=python-app-green" >> $GITHUB_ENV
          elif [ $namespacePresentGreen -eq 0 ]
          then
+            echo "Creating green namespace"
             kubectl create ns python-app-green
             cd k8s
             kustomize edit set namespace python-app-green
@@ -142,6 +146,7 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       run: |
+       echo "Updating image version to $DOCKER_USERNAME/ucu-de-devops-hw4-part-3:$GITHUB_SHA"
        cd k8s
        kustomize edit set image ucu-de-devops-hw4-part-3=$DOCKER_USERNAME/ucu-de-devops-hw4-part-3:$GITHUB_SHA
        cat kustomization.yaml
@@ -150,17 +155,12 @@ jobs:
       run: |
         kubectl apply -k k8s/ 
    
-    # DO SOME CHECKS HERE BEFORE COMMIT
-    #- name: Deploy updated Kubernetes resources
-    #  run: |
-    #    kubectl apply -k k8s/
-
-    # REMOVE OLD DEPLOYMENT!!
     - name: Remove old namespace
       run: |
         namespacePresentOld=`kubectl get ns | grep ${{ env.OLD_NAMESPACE }} | wc -l`
         if [ $namespacePresentOld -eq 1 ]
         then
+          echo "Removing old namespace ${{ env.OLD_NAMESPACE }}"
           kubectl delete ns ${{ env.OLD_NAMESPACE }} --wait=true
         fi
  
