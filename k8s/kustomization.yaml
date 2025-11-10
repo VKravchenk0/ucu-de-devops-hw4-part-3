@@ -4,8 +4,8 @@ resources:
 - deployment.yaml
 - service.yaml
 - ingress.yaml
-namespace: ucu-de-devops-hw4-part-3
+namespace: python-app-green
 images:
 - name: ucu-de-devops-hw4-part-3
   newName: theviach/ucu-de-devops-hw4-part-3
-  newTag: 6ecadb5dc7afc1fabc93d85dbc93a16a59ffc759
+  newTag: 9dc040a8a3c7bab0a6b3e3e5defe880316f9faf7
