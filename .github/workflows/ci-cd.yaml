@@ -82,8 +82,8 @@ jobs:
     
     env:
       PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-      GKE_CLUSTER: cluster-1    # TODO: update to cluster name
-      GKE_REGION: europe-central2-a   # TODO: update to cluster region
+      GKE_CLUSTER: cluster-1
+      GKE_REGION: europe-central2-a
 
     steps:
     - name: Check out code
